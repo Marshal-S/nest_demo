@@ -26,7 +26,7 @@ import { BlackList } from './entities/blacklist.entity';
       global: true, //设置为全局
       secret: envConfig.secret,
       signOptions: {
-        expiresIn: '7d', //失效时长设置为30天
+        expiresIn: '7d', //失效时长设置为7天
       },
     }),
   ],
