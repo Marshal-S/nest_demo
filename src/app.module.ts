@@ -17,7 +17,7 @@ import { FeatureModule } from './feature/feature.module';
       username: envConfig.dbusername,
       password: envConfig.dbpassword,
       database: envConfig.dbdatabase,
-      synchronize: true, //自动同步创建数据库表
+      synchronize: false, //自动同步创建数据库表
       retryDelay: 500,
       retryAttempts: 10,
       autoLoadEntities: true, //自动查找entity实体

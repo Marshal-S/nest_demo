@@ -82,7 +82,7 @@ export class AuthService {
             access_token: this.jwtService.sign({
                 id: user.id
             }, {
-                expiresIn: '1h' //1小时过期
+                expiresIn: '0.003h' //1小时过期
             }), //将token返回给客户端
             refresh_token: this.jwtService.sign({
                 id: user.id,
@@ -119,7 +119,7 @@ export class AuthService {
         user: User,
     ) {
         //获取新token
-        return ResponseData.refresh(
+        return ResponseData.ok(
             this.generateToken(user)
         );
     }

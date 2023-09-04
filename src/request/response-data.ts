@@ -32,11 +32,6 @@ export class ResponseData<T> {
         return new ResponseData(code, message);
     }
 
-    //留个刷新token的，这个一般不用来显示，会被忽略掉
-    static refresh<T>(data: T = null, code = 0, message = '') {
-        return new ResponseData(code, message, data);
-    }
-
     static pageOk<T>(data: [T[], number] = [[], 0], page: PageDto, message = 'ok'): ResponseData<ReponsePage<T>> {
         let items = data[0]
         let totolCount = data[1]
