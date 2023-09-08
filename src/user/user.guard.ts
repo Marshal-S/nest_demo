@@ -49,7 +49,11 @@ export class UserGuard implements CanActivate {
           return true
         }
       } catch(err) {
-        //不做处理
+        //如果过期，会出现这个额外参数，如果不是我们预先想的那样会出现其他错误
+        //因此不是过期情况，我们给出403禁止，否则走后面的过期或者通过
+        if (!err.expiredAt) {
+          return false
+        }
       }
     }
     if (publicStatus) {
