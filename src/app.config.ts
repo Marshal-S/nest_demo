@@ -39,8 +39,8 @@ class ConfigEnv  {
         this.minioBucketName = envConfig.MINIO_BUCKETNAME;
     }
 
-    get filePre() {
-        return `http://${this.host}:${this.port}/`;
+    fileUrl(path: string) {
+        return `http://${this.host}:${this.port}/api/file?path=${path}`;
     }
 }
 

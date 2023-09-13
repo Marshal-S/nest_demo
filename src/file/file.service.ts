@@ -29,10 +29,7 @@ export class FileService {
     file.size = mFile.size;
     file.path = mFile.path; //如果没开上传功能这个path会不存在
     await this.fileRepository.save(file)
-    return ResponseData.ok({
-      ...file,
-      url: envConfig.filePre + file.path
-    })
+    return ResponseData.ok(file)
   }
 
   async uploadMinio(
@@ -78,49 +75,6 @@ export class FileService {
     file.size = mFile.size;
     file.path = mFile.path;
     await this.fileRepository.save(file)
-    return ResponseData.ok({
-      ...file,
-      url: envConfig.filePre + file.path
-    });
-  }
-
-  async getFile(
-    body: ReqFileIdDto
-  ) {
-    let file = await this.fileRepository.findOneBy({
-      id: body.id
-    });
-    if (!file) {
-      return ResponseData.fail();
-    }
-    let url = this.minioService.presignedUrl(file.filename);
-    return ResponseData.ok({
-      ...file,
-      url
-    })
-  }
-
-  async getFiles(
-    body: ReqFilesIdDto,
-  ) {
-    let files = await this.fileRepository.findBy({
-      id: In(body.ids)
-    });
-    if (!files || files.length < 1) {
-      return ResponseData.fail();
-    }
-    let fileDtos: ResFileDto[] = [];
-    try {
-      for (let file of files) {
-        let fileDto = {
-          ...file,
-          url: await this.minioService.presignedUrl(file.filename),
-        };
-        fileDtos.push(fileDto);
-      }   
-    } catch(err) {
-      return ResponseData.fail();
-    }
-    return ResponseData.ok(fileDtos)
+    return ResponseData.ok(file);
   }
 }

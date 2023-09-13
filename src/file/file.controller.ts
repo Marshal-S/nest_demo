@@ -1,12 +1,13 @@
-import { Controller, Post, Body, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, UploadedFile, UseInterceptors, Get, Query, Res } from '@nestjs/common';
 import { FileService } from './file.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Public, ReqUser } from 'src/user/user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { APIResponse } from 'src/request/response';
+import { Response } from 'express'
 import { ApiFileBody, ApiFileConsumes } from './file.decorator';
 import { ResFileDto } from './dto/res-file.dto';
-import { ReqFileIdDto, ReqFilesIdDto } from './dto/req-file.dto';
+import { join } from 'path';
 
 @ApiTags('file')
 @Controller('file')
@@ -63,26 +64,12 @@ export class FileController {
   }
 
   @ApiOperation({
-    summary: '获取文件信息'
+    summary: '获取单个文件信息',
   })
   @Public()
-  @APIResponse(ResFileDto)
-  @Post('get_file')
-  getFile(
-    @Body() body: ReqFileIdDto,
-  ) {
-    return this.fileService.getFile(body)
-  }
-
-  @ApiOperation({
-    summary: '获取多个文件信息'
-  })
-  @Public()
-  @APIResponse([ResFileDto])
-  @Post('get_files')
-  getFiles(
-    @Body() body: ReqFilesIdDto,
-  ) {
-    return this.fileService.getFiles(body)
+  @APIResponse()
+  @Get()
+  getFile(@Query('path') path: string, @Res() res: Response) {
+      res.sendFile(join(__dirname, `../../${path}`))
   }
 }

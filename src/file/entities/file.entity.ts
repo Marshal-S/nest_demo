@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { envConfig } from "src/app.config";
+import { AfterLoad, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class File {
@@ -30,4 +31,11 @@ export class File {
 
     @CreateDateColumn()
     timestamp: Date
+
+    url: string
+
+    @AfterLoad()
+    generateUrl() {
+        this.url = envConfig.fileUrl(this.path)
+    }
 }
