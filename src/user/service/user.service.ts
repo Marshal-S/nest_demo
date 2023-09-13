@@ -116,6 +116,17 @@ export class UserService {
             order: {
                 createTime: 'DESC', //我们按照时间降序排列
             },
+            // order: {
+            //     //我们按照时间降序排列，次级更新时间升序排列
+            //     createTime: {
+            //         direction: 'DESC',
+            //         nulls: 'FIRST'
+            //     },
+            //     updateTime: {
+            //         direction: 'ASC',
+            //         nulls: 'LAST'
+            //     }
+            // },
             skip: page.skip, //自己计算页码和数量
             take: page.take,
         })

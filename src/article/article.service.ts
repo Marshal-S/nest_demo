@@ -321,14 +321,17 @@ export class ArticleService {
       .leftJoinAndSelect('article.user', 'user')
       .where('article.id=:id AND article.status=:status', {
         id: body.id,
-        status: body.status,
+        status: body.status
       })
-      .andWhere('article.title=:name OR article.desc=:name OR article.content=:name', {
-        name: body.name
+      .andWhere('article.title LIKE :name OR article.desc LIKE :name OR article.content LIKE :name', {
+        name: `%${body.name}%`
       })
       .orWhere('user.nickname LIKE :nickname', {
         nickname: `%${body.nickname}%`,
       })
+      // .orderBy('article.status', 'DESC')
+      // .addOrderBy('article.updateTime', 'DESC')
+      // .addOrderBy('article.createTIme', 'ASC')
       .skip(page.skip)
       .take(page.take)
       .getManyAndCount()
