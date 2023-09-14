@@ -7,6 +7,7 @@ import { TransformInterceptor } from './request/filter/transform.interceptor';
 import * as session from 'express-session';
 import * as express from 'express';
 import { envConfig } from './app.config';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -24,7 +25,7 @@ async function bootstrap() {
     })
   );
   //设置我们的public文件夹可以直接访问
-  app.use('/public', express.static(`${__dirname}/../public`));
+  app.use('/public', express.static(join(__dirname, '../public')));
   const options = new DocumentBuilder()
     .setTitle('nest demo api')
     .setDescription('This is nest demo api')
