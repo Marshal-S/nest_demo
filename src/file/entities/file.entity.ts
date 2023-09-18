@@ -11,6 +11,9 @@ export class File {
     size: number;
 
     @Column({ default: null })
+    originalname: string;
+
+    @Column({ default: null })
     filename: string;
 
     @Column({ default: null })

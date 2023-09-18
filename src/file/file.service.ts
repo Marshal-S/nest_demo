@@ -26,6 +26,9 @@ export class FileService {
       return ResponseData.fail('请选择文件');
     }
     let file = new File()
+    //解决乱码问题
+    file.originalname = Buffer.from(mFile.originalname, "latin1")
+      .toString("utf8")
     file.filename = mFile.filename;
     file.mimetype = mFile.mimetype;
     file.size = mFile.size;
