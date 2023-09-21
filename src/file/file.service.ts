@@ -5,11 +5,10 @@ import { File } from './entities/file.entity';
 import { ResponseData } from 'src/request/response-data';
 import { MinioService } from './minio.service';
 import { getFilename } from './file.model';
-import { ReqFileIdDto, ReqFilesIdDto } from './dto/req-file.dto';
-import { ResFileDto } from './dto/res-file.dto';
 import { envConfig } from 'src/app.config';
 import { join } from 'path';
 import { unlinkSync } from 'fs';
+import { ChunkInfo, uploadByFileHandle } from './file.utils';
 
 @Injectable()
 export class FileService {
@@ -90,6 +89,33 @@ export class FileService {
     return ResponseData.ok({
         ...file,
         url,
+    })
+  }
+
+  async testUpload() {
+    return new Promise((resolve, reject) => {
+      const filenames = []
+      uploadByFileHandle('public/4.mp4', async (err: Error, chunk: ChunkInfo) => {
+        if (err) {
+          resolve(ResponseData.ok('上传失败'))
+          return false
+        }
+				// let str = chunk.buffer.toString('utf-8')
+        try {
+          const filename = new Date().getTime().toString()
+          await this.minioService.putFile(filename, chunk.buffer)
+          filenames.push(filename)
+        } catch(err) {
+          return false
+        }
+        if (chunk.isCompleted) {
+          const filename = new Date().getTime().toString()
+          await this.minioService.compostObject(filename, filenames)
+          console.log('成功了')
+          resolve(ResponseData.ok('好了'))
+        }
+        return true
+      }, 64 * 1024 * 1024)
     })
   }
 }

@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsNotEmpty, Validate, isNumber } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min, Validate, isNumber } from "class-validator";
+import { IsMoney } from "../user.validate";
 
 export class UserDto {
     //api属性备注，必填
@@ -17,7 +18,8 @@ export class UserDto {
     readonly mobile: string
 
     @ApiPropertyOptional({description: '性别 1男 2女 0未知', example: 1})
-    @Validate((val: number) => !val || (val > 0 && val <= 2))
+    @Min(0)
+    @Max(1)
     readonly sex: number
 }
 
@@ -43,8 +45,14 @@ export class UserUpdateDto {
     @ApiPropertyOptional({description: '手机号', example: '133****3333'})
     readonly mobile: string
 
-    @ApiPropertyOptional({description: '性别 1男 2女 0未知', example: 1})
-    @Validate((val: number) => !val || (val > 0 && val <= 2))
+    @ApiProperty({description: '性别 1男 2女 0未知', example: 1})
+    @Min(0)
+    @Max(2)
     readonly sex: number
+
+    @ApiProperty({ description: '收入' })
+    @IsOptional()
+    @Validate(IsMoney)
+    readonly income: string
 }
 

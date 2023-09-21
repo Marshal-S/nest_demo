@@ -22,8 +22,8 @@ import { FeatureModule } from './feature/feature.module';
       retryAttempts: 10,
       autoLoadEntities: true, //自动查找entity实体
     }),
-    UserModule,
     FileModule,
+    UserModule,
     ArticleModule,
     FeatureModule,
   ],

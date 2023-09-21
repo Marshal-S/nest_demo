@@ -1,7 +1,7 @@
 import { Controller, Post, UploadedFile, UseInterceptors, Get, Query, Res } from '@nestjs/common';
 import { FileService } from './file.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Public, ReqUser } from 'src/user/user.decorator';
+import { Public } from 'src/user/user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { APIResponse } from 'src/request/response';
 import { Response } from 'express'
@@ -68,8 +68,18 @@ export class FileController {
   })
   @Public()
   @APIResponse()
-  @Get()
+  @Get('download')
   getFile(@Query('path') path: string, @Res() res: Response) {
       res.sendFile(join(__dirname, `../../${path}`))
+  }
+
+  @ApiOperation({
+    summary: '测试文件分割',
+  })
+  @Public()
+  @APIResponse()
+  @Post()
+  testFileChunk() {
+      return this.fileService.testUpload()
   }
 }

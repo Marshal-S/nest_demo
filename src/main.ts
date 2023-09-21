@@ -8,6 +8,7 @@ import * as session from 'express-session';
 import * as express from 'express';
 import { envConfig } from './app.config';
 import { join } from 'path';
+import { json } from 'express'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,6 +18,7 @@ async function bootstrap() {
   app.setGlobalPrefix(envConfig.prefix);
   //设置校验
   app.useGlobalPipes(new ValidationPipe());
+  app.use(json({ limit: '10mb' })) //默认就是100kb
   app.use(
     session({
       secret: envConfig.secret,

@@ -78,6 +78,7 @@ export class UserService {
         if (userInfo.mobile) user.mobile = userInfo.mobile;
         if (userInfo.nickname) user.nickname = userInfo.nickname;
         if (userInfo.sex) user.sex = userInfo.sex;
+        if (userInfo.income) user.income = userInfo.income
         await this.userRepository.save(user)
         return ResponseData.ok(user)
     }
