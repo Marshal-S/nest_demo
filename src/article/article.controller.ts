@@ -1,10 +1,10 @@
 import { Public, PublicUser } from './../user/user.decorator';
 import { ArticleDetalDto, ArticleDto } from './dto/res-article.dto';
 import { APIResponse } from 'src/request/response';
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ArticleService } from './article.service';
-import { ArticleCollectDto, ArticleCreateDto, ArticleIdDto, ArticleQueryDto, ArticleUpdateDto } from './dto/req-article.dto';
+import { ArticleCollectDto, ArticleCreateDto, ArticleIdDto, ArticleQueryDto, ArticleTimeDto, ArticleUpdateDto } from './dto/req-article.dto';
 import { ReqUser } from 'src/user/user.decorator';
 import { User } from 'src/user/entities/user.entity';
 
@@ -122,5 +122,18 @@ export class ArticleController {
 		@ReqUser() user: User,
 	) {
 		return this.articleService.query(body, user)
+	}
+
+
+	@ApiOperation({
+		summary: '查询某一天更新过信息的文章'
+	})
+	@Public()
+	@APIResponse([ArticleDto], true)
+	@Get("query_time")
+	queryByTime(
+		@Query() params: ArticleTimeDto
+	) {
+		return this.articleService.queryByTime(params.datetime)
 	}
 }

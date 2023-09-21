@@ -70,7 +70,8 @@ export class FileController {
   @APIResponse()
   @Get('download')
   getFile(@Query('path') path: string, @Res() res: Response) {
-      res.sendFile(join(__dirname, `../../${path}`))
+      res.sendFile(join(__dirname, `../../${path}`)) //小文件
+      // res.download(join(__dirname, `../../${path}`)) //大文件走这个
   }
 
   @ApiOperation({

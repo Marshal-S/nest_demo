@@ -66,3 +66,8 @@ export class ArticleQueryDto extends PageDto {
     @ApiPropertyOptional({ description: '用户昵称模糊查询，和其他选项是或的关系，用户只要符合就查出来', example: 'mm' })
     nickname: string
 }
+
+export class ArticleTimeDto {
+    @ApiPropertyOptional({ description: '日期：年-月-日(2023-12-12)' })
+    datetime: string
+}

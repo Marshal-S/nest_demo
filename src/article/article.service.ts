@@ -3,12 +3,14 @@ import { Injectable } from '@nestjs/common';
 import { ArticleCollectDto, ArticleCreateDto, ArticleIdDto, ArticleQueryDto, ArticleUpdateDto } from './dto/req-article.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Article } from './entities/article.entity';
-import { Equal, ILike, In, Like, Repository, getConnection, getManager } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { ResponseData } from 'src/request/response-data';
 import { User } from 'src/user/entities/user.entity';
 import { Feature } from 'src/feature/entities/feature.entity';
 import { PageDto } from 'src/request/page.dto';
-import { ArticleStatus } from './article.enum';
+import dayjs = require('dayjs');
+import utc = require('dayjs/plugin/utc')
+dayjs.extend(utc)
 
 @Injectable()
 export class ArticleService {
@@ -249,26 +251,26 @@ export class ArticleService {
       .createQueryBuilder()
       .relation(Article, 'collects')
       .of(article) //我们的文章实体和user多对多，我们给collects添加新的user关联
-      // 多对多，一对多的情况使用 add、remove
-      // .add(user) //添加关联
-      // .remove(user) //移除关联
-      // 一对一、多对一的情况使用 set
-      // .set(user) //只有一个，即添加、更新关联
-      // .set(null) //删除该关联
-      // .loadOne(); //需要加载的话，可以直接加载一个到多个关联对象
+    // 多对多，一对多的情况使用 add、remove
+    // .add(user) //添加关联
+    // .remove(user) //移除关联
+    // 一对一、多对一的情况使用 set
+    // .set(user) //只有一个，即添加、更新关联
+    // .set(null) //删除该关联
+    // .loadOne(); //需要加载的话，可以直接加载一个到多个关联对象
     if (body.is_collect == 1) {
       try {
         //直接收藏，添加已存在的会报错，errno: 1062
         await builder.add(user)
-      } catch(err) {
+      } catch (err) {
         if (err.errno === 1062) {
           //重复，也就是已经收藏
           return ResponseData.ok()
-        }else {
+        } else {
           return ResponseData.fail(err.msg, 500)
         }
       }
-    }else {
+    } else {
       //删除不存在的不会报错
       await builder.remove(user)
     }
@@ -279,7 +281,7 @@ export class ArticleService {
     body: ArticleQueryDto,
     user: User
   ) {
-    if (!body.id && !body.name && !body.status &&!body.nickname) {
+    if (!body.id && !body.name && !body.status && !body.nickname) {
       return ResponseData.fail('缺少参数');
     }
     let page = new PageDto(body)
@@ -336,5 +338,26 @@ export class ArticleService {
       .take(page.take)
       .getManyAndCount()
     return ResponseData.pageOk(articles, page);
+  }
+
+  async queryByTime(datetime: string) {
+    let day = dayjs(datetime)
+    console.log(day.toDate(), day.add(1, 'day').toDate())
+    // let articles = await this.articleRepository.findAndCount({
+    //   where: {
+    //     updateTime: Between(day.toDate(), day.add(1, 'day').toDate())
+    //   },
+    //   order: {
+    //     updateTime: 'DESC'
+    //   }
+    // })
+    let articles = await this.articleRepository.createQueryBuilder('user')
+      .where('updateTime>=:start AND updateTime<:end', {
+        start: day.toDate(),
+        end: day.add(1, 'day').toDate()
+      })
+      .orderBy('user.updateTime', 'DESC')
+      .getManyAndCount()
+    return ResponseData.ok(articles)
   }
 }
