@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { UserService } from './service/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -14,6 +14,8 @@ import { Article } from 'src/article/entities/article.entity';
 import { Feature } from 'src/feature/entities/feature.entity';
 import { FeatureService } from 'src/feature/feature.service';
 import { BlackList } from './entities/blacklist.entity';
+import { UserMiddleware } from './user.middleware';
+import { ArticleController } from 'src/article/article.controller';
 
 @Module({
   imports: [
@@ -42,4 +44,11 @@ import { BlackList } from './entities/blacklist.entity';
     },
   ],
 })
-export class UserModule {}
+export class UserModule  implements NestModule {
+
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(UserMiddleware)
+      .forRoutes(UserController, ArticleController);
+  }
+}

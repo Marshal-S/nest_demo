@@ -6,7 +6,7 @@ import { UserService } from './service/user.service';
 import { LoginDto, UserDto, UserUpdateDto } from './dto/req-user.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { APIResponse } from 'src/request/response';
-import { Guards, Public, ReqUser } from './user.decorator';
+import { Guards, Public, PublicUser, ReqUser } from './user.decorator';
 import { AuthService } from './service/auth.service';
 import { TokenDto } from './dto/res-user.dto';
 import { User } from './entities/user.entity';
@@ -28,13 +28,14 @@ export class UserController {
   @ApiOperation({
     summary: '获取用户信息'
   })
+  @PublicUser()
   @APIResponse(UserDto)
   @Get('detail') //命名追加到url路径上
   getUserInfo(
-    // id: number //声明一个 query 类型 id，类型为number
+    @Query('id') id: number,
     @ReqUser() user: User
   ) {
-    return this.userService.findUser(user.id)
+    return this.userService.findUser(id ? id : user.id)
   }
 
   @ApiOperation({

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -7,6 +7,9 @@ import { FileModule } from './file/file.module';
 import { UserModule } from './user/user.module';
 import { ArticleModule } from './article/article.module';
 import { FeatureModule } from './feature/feature.module';
+import { UserController } from './user/user.controller';
+import { ArticleController } from './article/article.controller';
+import { UserMiddleware } from './user/user.middleware';
 
 @Module({
   imports: [
@@ -32,4 +35,11 @@ import { FeatureModule } from './feature/feature.module';
     AppService,
   ],
 })
-export class AppModule { }
+export class AppModule {
+
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer
+  //     .apply(UserMiddleware)
+  //     .forRoutes(UserController, ArticleController);
+  // }
+}
