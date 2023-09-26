@@ -96,7 +96,6 @@ export class FileController {
   @Public()
   @APIResponse(ResFileDto)
   @Post('presign')
-  @UseInterceptors(FileInterceptor('file'))
   presignByFormData(@Body() body: FilePresignDto) {
       return this.fileExService.presignByFormData(body)
   }
@@ -107,7 +106,6 @@ export class FileController {
   @Public()
   @APIResponse(ResFileDto)
   @Post('presign_oss')
-  @UseInterceptors(FileInterceptor('file'))
   presignByOss(@Body() body: FilePresignDto) {
       return this.fileExService.presignByOss(body)
   }
