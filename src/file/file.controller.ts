@@ -1,4 +1,4 @@
-import { Controller, Post, UploadedFile, UseInterceptors, Get, Query, Res } from '@nestjs/common';
+import { Controller, Post, UploadedFile, UseInterceptors, Get, Query, Res, Body } from '@nestjs/common';
 import { FileService } from './file.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/user/user.decorator';
@@ -8,11 +8,16 @@ import { Response } from 'express'
 import { ApiFileBody, ApiFileConsumes } from './file.decorator';
 import { ResFileDto } from './dto/res-file.dto';
 import { join } from 'path';
+import { FileExService } from './fileEx.service';
+import { FilePresignDto } from './dto/req-file.dto';
 
 @ApiTags('file')
 @Controller('file')
 export class FileController {
-  constructor(private readonly fileService: FileService) { }
+  constructor(
+    private readonly fileService: FileService,
+    private readonly fileExService: FileExService
+  ) { }
 
   @ApiOperation({
     summary: '上传文件到磁盘'
@@ -83,4 +88,38 @@ export class FileController {
   testFileChunk() {
       return this.fileService.testUpload()
   }
+
+
+  @ApiOperation({
+    summary: '上传前的预签名（form_data）',
+  })
+  @Public()
+  @APIResponse(ResFileDto)
+  @Post('presign')
+  @UseInterceptors(FileInterceptor('file'))
+  presignByFormData(@Body() body: FilePresignDto) {
+      return this.fileExService.presignByFormData(body)
+  }
+
+  @ApiOperation({
+    summary: '上传前的预签名（oss）',
+  })
+  @Public()
+  @APIResponse(ResFileDto)
+  @Post('presign_oss')
+  @UseInterceptors(FileInterceptor('file'))
+  presignByOss(@Body() body: FilePresignDto) {
+      return this.fileExService.presignByOss(body)
+  }
+
+  @ApiOperation({
+    summary: '固定url文件读取文件信息接口(重定向)',
+  })
+  @Public()
+  @APIResponse()
+  @Get('download_url')
+  getFileInfo(@Query('path') path: string, @Res() res: Response) {
+      this.fileExService.download(path, res)
+  }
+
 }

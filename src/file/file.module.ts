@@ -8,6 +8,7 @@ import { diskStorage } from 'multer';
 import { MinioService } from './minio.service';
 import dayjs = require('dayjs');
 import { getFilename } from './file.model';
+import { FileExService } from './fileEx.service';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { getFilename } from './file.model';
   controllers: [FileController],
   providers: [
     FileService, 
+    FileExService,
     MinioService,
   ]
 })

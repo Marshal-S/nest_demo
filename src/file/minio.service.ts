@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Client, CopyDestinationOptions, CopySourceOptions } from 'minio';
+import { Client, CopyDestinationOptions, CopySourceOptions, PostPolicy } from 'minio';
 import { envConfig } from "src/app.config";
 
 @Injectable()
@@ -45,6 +45,20 @@ export class MinioService {
         )
     }
 
+    async getPresignedUrl(filename: string) {
+        let url = ''
+        try {
+            url = await this.client.presignedUrl(
+                'GET',
+                envConfig.minioBucketName,
+                filename,
+            )
+        } catch (err) {
+        } finally {
+            return url
+        }
+    }
+
     getObject(filename: string) {
         return this.client.getObject(
             envConfig.minioBucketName,
@@ -71,6 +85,22 @@ export class MinioService {
             sourceList
         )
         return filename
+    }
+
+    presignPutUrl(filename: string) {
+        return this.client.presignedPutObject(
+            envConfig.minioBucketName,
+            filename,
+        )
+    }
+
+    presignPutUrlByFormdata(filename: string) {
+        const policy = new PostPolicy()
+        policy.setBucket(envConfig.minioBucketName)
+        policy.setContentType('multipart/form-data')
+        policy.setKey(filename)
+        policy.setContentLengthRange(1, 5 * 1024 * 1024 * 1024) //5G
+        return this.client.presignedPostPolicy(policy)
     }
 
 }

@@ -2,9 +2,8 @@ import * as dotenv from 'dotenv';
 
 class ConfigEnv  {
     secret: string;
-    host: string;
-    port: number;
-    prefix: string
+    prefix: string;
+    serviceUrl: string;
     
     //mysql
     dbhost: string;
@@ -22,9 +21,9 @@ class ConfigEnv  {
 
     constructor(envConfig: any) {
         this.secret = envConfig.APP_SECRET;
-        this.host = envConfig.APP_HOST;
-        this.port = envConfig.APP_PORT && Number(envConfig.APP_PORT);
         this.prefix = envConfig.APP_PREFIX
+
+        this.serviceUrl = envConfig.SERVICE_URL
 
         this.dbhost = envConfig.DB_HOST;
         this.dbport = envConfig.DB_PORT && Number(envConfig.DB_PORT); 
@@ -37,10 +36,11 @@ class ConfigEnv  {
         this.minioAccessKey = envConfig.MINIO_ACCESSKEY;
         this.minioSecretKey = envConfig.MINIO_SECRETKEY;
         this.minioBucketName = envConfig.MINIO_BUCKETNAME;
+        
     }
 
     fileUrl(path: string) {
-        return `http://${this.host}:${this.port}/api/file?path=${path}`;
+        return `${envConfig.serviceUrl}/api/file/download?path=${path}`;
     }
 }
 

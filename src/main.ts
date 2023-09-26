@@ -40,7 +40,7 @@ async function bootstrap() {
   // app.useGlobalFilters(new HttpExceptionFilter());
   // //添加成功后的参数过滤器
   // app.useGlobalInterceptors(new TransformInterceptor())
-  await app.listen(envConfig.port);
+  await app.listen(3000);
 }
 
 bootstrap();
