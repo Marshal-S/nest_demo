@@ -2,6 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { Client, CopyDestinationOptions, CopySourceOptions, PostPolicy } from 'minio';
 import { envConfig } from "src/app.config";
 
+//正常来说这个文件类应该被导入一会才好，因为模块依赖，这个会被创建多次，设计这个文件可以设置成单例使用，避免导入多次
+let minioService: MinioService | null = null
+
 @Injectable()
 export class MinioService {
     private client: Client;
@@ -14,6 +17,12 @@ export class MinioService {
             secretKey: envConfig.minioSecretKey,
             // partSize: 64 * 1024 * 1024, //默认64M
         });
+        minioService = this
+    }
+
+    static get share() {
+        //单例，用于跨场景使用，最好不要多个模块导入该Service
+        return minioService
     }
 
     //上传文件
@@ -103,4 +112,11 @@ export class MinioService {
         return this.client.presignedPostPolicy(policy)
     }
 
+    async getTestUrl(): Promise<string> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve('我是测试返回的假的url')
+            }, 100);
+        })
+    }
 }

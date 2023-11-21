@@ -1,5 +1,6 @@
 import { envConfig } from "src/app.config";
 import { AfterLoad, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { MinioService } from "../minio.service";
 
 @Entity()
 export class File {
@@ -38,7 +39,8 @@ export class File {
     url: string
 
     @AfterLoad()
-    generateUrl() {
-        this.url = envConfig.fileUrl(this.path)
+    async generateUrl() {
+        this.url = await MinioService.share.getTestUrl()
+        // this.url = envConfig.fileUrl(this.path)
     }
 }

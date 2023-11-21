@@ -118,4 +118,10 @@ export class FileService {
       }, 64 * 1024 * 1024)
     })
   }
+
+  async getAllFiles() {
+    return ResponseData.ok(
+      await this.fileRepository.find()
+    )
+  }
 }

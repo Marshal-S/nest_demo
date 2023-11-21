@@ -10,6 +10,7 @@ import { ResFileDto } from './dto/res-file.dto';
 import { join } from 'path';
 import { FileExService } from './fileEx.service';
 import { FilePresignDto } from './dto/req-file.dto';
+import { File } from './entities/file.entity';
 
 @ApiTags('file')
 @Controller('file')
@@ -118,6 +119,16 @@ export class FileController {
   @Get('download_url')
   getFileInfo(@Query('path') path: string, @Res() res: Response) {
       this.fileExService.download(path, res)
+  }
+
+  @ApiOperation({
+    summary: '获取所有文件信息',
+  })
+  @Public()
+  @APIResponse([File])
+  @Get('all_files')
+  getAllFiles() {
+      return this.fileService.getAllFiles()
   }
 
 }
