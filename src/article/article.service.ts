@@ -225,10 +225,12 @@ export class ArticleService {
     if (body.is_collect == 1 && !isCollect) {
       //尚未收藏、进行收藏
       article.collects.push(user);
+      article.collectCount += 1
       // article.collects.push({id: user.id} as User);//如果用的不是user，是userid的话，转化一下，关系实际只也用到了主键id
     } else if (body.is_collect != 1 && isCollect) {
       //已收藏、取消收藏
       article.collects.splice(index, 1)
+      article.collectCount -= 1
     }
     await this.articleRepository.save(article)
     return ResponseData.ok();

@@ -19,7 +19,10 @@ export class PageDto {
     }
 
     constructor(page: PageDto) {
-        this.page_num = page?.page_num || defaultPageNum;
-        this.page_size = page?.page_size ? page.page_size : defaultPageSize;
+        this.page_num =
+            (page?.page_num && parseInt(page.page_num + '')) || defaultPageNum;
+        this.page_size =
+            (page?.page_size && parseInt(page.page_size + '')) ||
+            defaultPageSize;
     }
 }

@@ -19,6 +19,16 @@ class ConfigEnv  {
     minioSecretKey: string;
     minioBucketName: string;
 
+    //AWS
+    awsPoint: string
+    awsAccessKey: string
+    awsSecretKey: string
+    awsBucketName: string
+
+    //redis
+    redisHost: string
+    redisPort: number
+
     constructor(envConfig: any) {
         this.secret = envConfig.APP_SECRET;
         this.prefix = envConfig.APP_PREFIX
@@ -36,7 +46,11 @@ class ConfigEnv  {
         this.minioAccessKey = envConfig.MINIO_ACCESSKEY;
         this.minioSecretKey = envConfig.MINIO_SECRETKEY;
         this.minioBucketName = envConfig.MINIO_BUCKETNAME;
-        
+
+        this.awsPoint = envConfig.AWS_POINT
+        this.awsAccessKey = envConfig.AWS_ACCESSKEY
+        this.awsSecretKey = envConfig.AWS_SECRETKEY
+        this.awsBucketName = envConfig.AWS_BUCKETNAME
     }
 
     fileUrl(path: string) {
