@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import {
+    AbortMultipartUploadCommand,
+    CompleteMultipartUploadCommand,
+    CreateMultipartUploadCommand,
     GetObjectCommand,
     PutObjectCommand,
     S3Client,
+    UploadPartCommand,
 } from '@aws-sdk/client-s3'
 import { envConfig } from 'src/app.config'
+import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
 
 @Injectable()
 export class AWSService {
@@ -42,25 +47,84 @@ export class AWSService {
         })
     }
 
-    async signUpload(filename: string) {
+    signlPostUpoadPost(filename: string) {
+        return createPresignedPost(this.client, {
+            Bucket: this.bucketName,
+            Key: filename,
+            Expires: 24 * 3600, //1天后失效
+        })
+    }
+
+    signPutUpload(filename: string) {
         const command = new PutObjectCommand({
             Bucket: this.bucketName,
             Key: filename,
         })
-        const url = await getSignedUrl(this.client, command, {
+        return getSignedUrl(this.client, command, {
             expiresIn: 24 * 3600, //限制一天上传完毕
         })
-        console.log(url)
     }
 
-    async signedUrl(filename: string) {
+    signedUrl(filename: string) {
         const command = new GetObjectCommand({
             Bucket: this.bucketName,
             Key: filename,
         })
-        const url = await getSignedUrl(this.client, command, {
+        return getSignedUrl(this.client, command, {
             expiresIn: 7 * 24 * 3600, //7天
         })
-        return url
+    }
+
+    //下面是分段上传的三个步骤，创建、上传、合并(取消)
+    async createPartUpload(filename: string) {
+        const res = await this.client.send(
+            new CreateMultipartUploadCommand({
+                Bucket: this.bucketName,
+                Key: filename,
+            }),
+        )
+        return {
+            // bucketName: res.Bucket, //只连接一个的就没必要了
+            key: res.Key,
+            upload_id: res.UploadId,
+            first_part_number: 1, //默认从第一个开始，告知一下
+        }
+    }
+
+    partUpload(filename: string, uploadId: string, partNumber: number) {
+        return getSignedUrl(
+            this.client,
+            new UploadPartCommand({
+                Bucket: this.bucketName,
+                Key: filename,
+                PartNumber: partNumber,
+                UploadId: uploadId,
+            }),
+        )
+    }
+
+    completePartUpload(filename: string, uploadId: string, part_numbers: string) {
+        const partNumbers = part_numbers && JSON.parse(part_numbers)
+        return getSignedUrl(
+            this.client,
+            new CompleteMultipartUploadCommand({
+                Bucket: this.bucketName,
+                Key: filename,
+                MultipartUpload: {
+                    Parts:  partNumbers.map((e: number) => { PartNumber: e } ),
+                },
+                UploadId: uploadId,
+            }),
+        )
+    }
+
+    aboutPartUpload(filename: string, uploadId: string) {
+        return this.client.send(
+            new AbortMultipartUploadCommand({
+                Bucket: this.bucketName,
+                Key: filename,
+                UploadId: uploadId,
+            }),
+        )
     }
 }
