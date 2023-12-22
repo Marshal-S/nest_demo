@@ -5,6 +5,7 @@ import {
     CompleteMultipartUploadCommand,
     CreateMultipartUploadCommand,
     GetObjectCommand,
+    ListPartsCommand,
     PutObjectCommand,
     S3Client,
     UploadPartCommand,
@@ -103,15 +104,40 @@ export class AWSService {
         )
     }
 
-    completePartUpload(filename: string, uploadId: string, part_numbers: string) {
-        const partNumbers = part_numbers && JSON.parse(part_numbers)
-        return getSignedUrl(
-            this.client,
+    //查看分段
+    listPartUpload(filename: string, uploadId: string) {
+        return this.client.send(
+            new ListPartsCommand({
+                Bucket: this.bucketName,
+                Key: filename,
+                UploadId: uploadId,
+            }),
+        )
+    }
+
+    async completePartUpload(filename: string, uploadId: string) {
+        let listparts = null
+        try {
+            //获取分段信息，除了用于获取分段参数，也可以用来判断是否上传分段了
+            listparts = await this.client.send(
+                new ListPartsCommand({
+                    Bucket: this.bucketName,
+                    Key: filename,
+                    UploadId: uploadId,
+                }),
+            )
+        } catch (err) {
+            console.log(err)
+        }
+        if (!listparts?.Parts) {
+            return Promise.reject('没有发现上传的分段信息')
+        }
+        return this.client.send(
             new CompleteMultipartUploadCommand({
                 Bucket: this.bucketName,
                 Key: filename,
                 MultipartUpload: {
-                    Parts:  partNumbers.map((e: number) => { PartNumber: e } ),
+                    Parts: listparts.Parts,
                 },
                 UploadId: uploadId,
             }),
