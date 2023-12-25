@@ -9,6 +9,7 @@ import { MinioService } from './minio.service';
 import dayjs = require('dayjs');
 import { getFilename } from './file.model';
 import { FileExService } from './fileEx.service';
+import { FileSubscriber } from './file.subscriber';
 
 @Module({
   imports: [
@@ -27,6 +28,12 @@ import { FileExService } from './fileEx.service';
   ],
   controllers: [FileController],
   providers: [
+    FileService, 
+    FileExService,
+    MinioService,
+    FileSubscriber,
+  ],
+  exports: [
     FileService, 
     FileExService,
     MinioService,

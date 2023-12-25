@@ -54,18 +54,12 @@ export class MinioService {
         )
     }
 
-    async getPresignedUrl(filename: string) {
-        let url = ''
-        try {
-            url = await this.client.presignedUrl(
-                'GET',
-                envConfig.minioBucketName,
-                filename,
-            )
-        } catch (err) {
-        } finally {
-            return url
-        }
+    getPresignedUrl(filename: string) {
+        return this.client.presignedUrl(
+            'GET',
+            envConfig.minioBucketName,
+            filename,
+        )
     }
 
     getObject(filename: string) {

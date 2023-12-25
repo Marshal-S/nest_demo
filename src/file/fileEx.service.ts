@@ -68,6 +68,8 @@ export class FileExService {
 
 	async download(path: string, res: Response) {
 		//重定向
-		res.redirect(await this.minioService.getPresignedUrl(path))
+		if (path) {
+			res.redirect(await this.minioService.getPresignedUrl(path))
+		}
 	}
 }

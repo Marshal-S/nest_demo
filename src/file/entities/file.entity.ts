@@ -40,7 +40,10 @@ export class File {
 
     @AfterLoad()
     async generateUrl() {
-        this.url = await MinioService.share.getTestUrl()
+        //可以看情况使用，这么使用目前来说比 subscriber 监听好点
+        if (this.filename) {
+            this.url = await MinioService.share.getPresignedUrl(this.filename)
+        }
         // this.url = envConfig.fileUrl(this.path)
     }
 }
