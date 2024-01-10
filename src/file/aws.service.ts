@@ -13,6 +13,9 @@ import {
 import { envConfig } from 'src/app.config'
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
 
+let instance: AWSService | null = null
+
+//这个我们就不对外导出使用了，外部直接以单例方式使用AWSService.share
 @Injectable()
 export class AWSService {
     client: S3Client
@@ -27,6 +30,11 @@ export class AWSService {
             },
         })
         this.bucketName = envConfig.awsBucketName
+        instance = this
+    }
+
+    static get share() {
+        return instance
     }
 
     //获取text文本(转化utf8)

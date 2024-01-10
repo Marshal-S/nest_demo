@@ -36,7 +36,6 @@ import { FileSubscriber } from './file.subscriber';
   exports: [
     FileService, 
     FileExService,
-    MinioService,
   ]
 })
 export class FileModule {}
