@@ -48,7 +48,8 @@ export class AWSService {
                     }),
                 )
                 .then(async function (obj) {
-                    resolve(await obj?.Body.transformToString('utf-8'))
+                    resolve(await obj?.Body.transformToString())
+                    //resolve(await obj?.Body.transformToString('utf-8'))
                 })
                 .catch(function (err) {
                     reject(err)
