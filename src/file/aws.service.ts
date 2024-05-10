@@ -19,11 +19,22 @@ let instance: AWSService | null = null
 @Injectable()
 export class AWSService {
     client: S3Client
+    private privateClient: S3Client
     bucketName: string
     constructor() {
+        //外网签名(如果是在内网则无效，因此可能存在两种签名)
         this.client = new S3Client({
             region: 'tianjin1',
             endpoint: envConfig.awsPoint,
+            credentials: {
+                accessKeyId: envConfig.awsAccessKey,
+                secretAccessKey: envConfig.awsSecretKey,
+            },
+        })
+        //私有服务器签名(一般特殊所在地签名时使用，例如：服务器部署在内网，需要用到相关api)
+        this.privateClient = new S3Client({
+            region: 'tianjin1',
+            endpoint: envConfig.awsPointPrivate,
             credentials: {
                 accessKeyId: envConfig.awsAccessKey,
                 secretAccessKey: envConfig.awsSecretKey,
@@ -37,25 +48,26 @@ export class AWSService {
         return instance
     }
 
-    //获取text文本(转化utf8)
-    getObjectText(filename: string) {
-        return new Promise<string>((resolve, reject) => {
-            this.client
-                .send(
-                    new GetObjectCommand({
-                        Bucket: this.bucketName,
-                        Key: filename,
-                    }),
-                )
-                .then(async function (obj) {
-                    resolve(await obj?.Body.transformToString())
-                    //resolve(await obj?.Body.transformToString('utf-8'))
-                })
-                .catch(function (err) {
-                    reject(err)
-                })
-        })
-    }
+    //获取text文本(转化utf8)，此方法不建议使用了
+    //本人再一次部署正式环境被坑了，这方法无法正常使用，会超时，采用signedUrl签名 + fetch(url) + response.text()即可
+    // getObjectText(filename: string) {
+    //     return new Promise<string>((resolve, reject) => {
+    //         this.client
+    //             .send(
+    //                 new GetObjectCommand({
+    //                     Bucket: this.bucketName,
+    //                     Key: filename,
+    //                 }),
+    //             )
+    //             .then(async function (obj) {
+    //                 resolve(await obj?.Body.transformToString())
+    //                 //resolve(await obj?.Body.transformToString('utf-8'))
+    //             })
+    //             .catch(function (err) {
+    //                 reject(err)
+    //             })
+    //     })
+    // }
 
     signlPostUpoadPost(filename: string) {
         return createPresignedPost(this.client, {
@@ -81,6 +93,17 @@ export class AWSService {
             Key: filename,
         })
         return getSignedUrl(this.client, command, {
+            expiresIn: 7 * 24 * 3600, //7天
+        })
+    }
+
+    //私有域名签名
+    signedUrlByPrivate(filename: string) {
+        const command = new GetObjectCommand({
+            Bucket: this.bucketName,
+            Key: filename,
+        })
+        return getSignedUrl(this.privateClient, command, {
             expiresIn: 7 * 24 * 3600, //7天
         })
     }
