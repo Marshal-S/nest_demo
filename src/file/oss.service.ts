@@ -17,7 +17,7 @@ export class OSSService {
                 secure: true,
             })
         }
-        this.host = `https://${envConfig.OSS_BUCKETNAME}.${envConfigfig.OSS_POINT}`
+        this.host = `https://${envConfig.OSS_BUCKETNAME}.${envConfig.OSS_POINT}`
     }
 
     signUpload(filename: string) {

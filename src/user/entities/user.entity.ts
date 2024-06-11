@@ -40,7 +40,7 @@ export class User {
     @Column('text', { default: null })
     desc: string
 
-    @Column()
+    @Column({ default: null })
     income: string
 
     //下面是创建内容自动生成，和更新时自动更新的时间戳，分别代表该条记录创建时间和上次更新时间

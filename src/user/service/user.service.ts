@@ -11,7 +11,7 @@ import { BlackList } from '../entities/blacklist.entity';
 
 @Injectable()
 export class UserService {
-    blackSet = new Set<number>()
+    blackSet = new Set<number>();
 
     constructor(
         @InjectRepository(User)
@@ -23,36 +23,33 @@ export class UserService {
         @InjectRepository(Article)
         private articleRepository: Repository<Article>,
     ) {
-        this.initBlackList()
+        this.initBlackList();
     }
 
     queryUserById(id: number) {
-        return this.userRepository.findOneBy({ id })
+        return this.userRepository.findOneBy({ id });
     }
 
     async findUser(id: number) {
         //nest的查询语句，这句意思和 findOne 一样，根据表当中的某个字段获取一个
-        let user = await this.userRepository.findOneBy({ id })
+        let user = await this.userRepository.findOneBy({ id });
         //可以通过find系列获取多个，那时需要代码和数量了
         if (!user) {
             // throw new HttpException('没找到用户', 204)
-            return ResponseData.fail('该用户不存在')
+            return ResponseData.fail('该用户不存在');
         }
         return ResponseData.ok(user);
     }
 
     //更新用户信息
-    async updateUser(
-        userInfo: UserUpdateDto,
-        user: User,
-    ) {
+    async updateUser(userInfo: UserUpdateDto, user: User) {
         user = await this.userRepository.findOneBy({
-            id: user.id
-        })
+            id: user.id,
+        });
         if (!user) {
             // 可以抛出一个异常告诉没找到，一般直接返回
             // throw new HttpException('该用户不存在', 204)
-            return ResponseData.fail('该用户不存在')
+            return ResponseData.fail('该用户不存在');
         }
         // //update只更新，不返回那条新user，需要user需要自己拼接
         // 需要注意的是如果一些参数不存在，仍然可以更新和保存，但多出来的字段会失败，然而我们会拼接上
@@ -78,35 +75,30 @@ export class UserService {
         if (userInfo.mobile) user.mobile = userInfo.mobile;
         if (userInfo.nickname) user.nickname = userInfo.nickname;
         if (userInfo.sex) user.sex = userInfo.sex;
-        if (userInfo.income) user.income = userInfo.income
-        await this.userRepository.save(user)
-        return ResponseData.ok(user)
+        if (userInfo.income) user.income = userInfo.income;
+        await this.userRepository.save(user);
+        return ResponseData.ok(user);
     }
 
     //我的收藏
-    async getCollects(
-        user: User,
-    ) {
+    async getCollects(user: User) {
         user = await this.userRepository.findOne({
             relations: {
-                collects: true
+                collects: true,
             },
             where: {
                 id: user.id,
             },
-        })
+        });
         if (!user) {
-            return ResponseData.fail('该用户不存在')
+            return ResponseData.fail('该用户不存在');
         }
-        return ResponseData.ok(user.collects)
+        return ResponseData.ok(user.collects);
     }
 
     //我的文章
-    async getArticles(
-        body: PageDto,
-        user: User,
-    ) {
-        let page = new PageDto(body) //创建pagedto对象
+    async getArticles(body: PageDto, user: User) {
+        let page = new PageDto(body); //创建pagedto对象
         //文章比较多，这里可以做一个分页)，顺道获取一下总数量
         //findAndCount结果是[articles[], count]，find的结果是articles[]
         let articles = await this.articleRepository.findAndCount({
@@ -130,92 +122,117 @@ export class UserService {
             // },
             skip: page.skip, //自己计算页码和数量
             take: page.take,
-        })
-        return ResponseData.pageOk(articles, page)
+        });
+        return ResponseData.pageOk(articles, page);
     }
 
     //我的专栏
-    async getFeatures(
-        body: PageDto,
-        user: User,
-    ) {
-        let page = new PageDto(body) //创建pagedto对象
+    async getFeatures(body: PageDto, user: User) {
+        let page = new PageDto(body); //创建pagedto对象
         //直接获取即可，也可以通过user直接获取，只不多多查询了用户表
         let features = await this.featureRepository.findAndCount({
             where: {
-                userId: user.id
+                userId: user.id,
             },
             skip: page.skip, //自己计算页码和数量
             take: page.take,
-        })
-        return ResponseData.pageOk(features, page)
+        });
+        return ResponseData.pageOk(features, page);
     }
 
     //我订阅的专栏
-    async getSubscribeFeature(
-        user: User,
-    ) {
+    async getSubscribeFeature(user: User) {
         //多对多，这样获取最方便，但不是最快的，因为多了一个查找用户表的过程
         user = await this.userRepository.findOne({
             where: {
                 id: user.id,
             },
             relations: {
-                subscribeFeatures: true
-            }
-        })
+                subscribeFeatures: true,
+            },
+        });
         if (!user) {
-            return ResponseData.fail('该用户不存在')
+            return ResponseData.fail('该用户不存在');
         }
-        return ResponseData.ok(user.subscribeFeatures)
+        return ResponseData.ok(user.subscribeFeatures);
     }
 
     //注销用户
-    async unregister(
-        user: User,
-    ) {
+    async unregister(user: User) {
         let black = await this.blackRepository.findOneBy({
-            userId: user.id
-        })
-        console.log(user)
+            userId: user.id,
+        });
+        console.log(user);
         if (!black) {
-            this.blackSet.add(user.id)
-            black = new BlackList()
-            black.userId = user.id
-            await this.blackRepository.save(black)   
+            this.blackSet.add(user.id);
+            black = new BlackList();
+            black.userId = user.id;
+            await this.blackRepository.save(black);
         }
         return ResponseData.ok('注销成功');
     }
 
     //恢复用户
-    async recoverUser(
-        user: User,
-    ) {
+    async recoverUser(user: User) {
         let black = await this.blackRepository.findOneBy({
-            userId: user.id
-        })
+            userId: user.id,
+        });
         if (black) {
             await this.blackRepository.delete({
-                userId: user.id
-            })
-            this.blackSet.delete(user.id)
+                userId: user.id,
+            });
+            this.blackSet.delete(user.id);
         }
         return ResponseData.ok('恢复成功');
     }
 
     async initBlackList() {
         //初始化黑名单
-        let blackList = await this.blackRepository.find()
-        let set = this.blackSet
-        blackList.forEach(function(e) {
-            set.add(e.userId)
-        })
+        let blackList = await this.blackRepository.find();
+        let set = this.blackSet;
+        blackList.forEach(function (e) {
+            set.add(e.userId);
+        });
     }
 
-    async deleteBlackList(
-        userId: number,
-    ) {
-        this.blackSet.delete(userId)
-        await this.blackRepository.delete({ userId })
+    async deleteBlackList(userId: number) {
+        this.blackSet.delete(userId);
+        await this.blackRepository.delete({ userId });
+    }
+
+    async transactionOthers() {
+        const user = await this.userRepository.findOne({
+            where: {
+                id: 2,
+            },
+        });
+        user.age = 21;
+
+        const user2 = new User()
+        user2.account = 'admin5'
+        user2.nickname = '哈哈哈'
+        user2.age = 25;
+
+        const article = await this.articleRepository.findOne({
+            where: {
+                id: 17,
+            },
+        });
+        article.desc = '笑哭😂';
+        try {
+            await this.userRepository.manager.transaction(async (manager) => {
+                // await manager.save([user, user2, article]); 
+                //这个是需要顺序的
+                const user = await manager.save(user2)
+                article.userId = user.id
+                await manager.save(article)
+            });
+            //"READ UNCOMMITTED" | "READ COMMITTED" | "REPEATABLE READ" | "SERIALIZABLE"
+            await this.userRepository.manager.transaction('SERIALIZABLE', async (manager) => {})
+        } catch (err) {
+            console.log(err);
+            return;
+        }
+        console.log('成功了');
     }
 }

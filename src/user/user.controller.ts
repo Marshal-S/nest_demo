@@ -14,7 +14,6 @@ import { CookieExtend } from './user.session';
 import { UserGuard } from './user.guard';
 import { ArticleDto } from 'src/article/dto/res-article.dto';
 import { FeatureDto } from 'src/feature/dto/res-feature.dto';
-import { Transaction } from 'typeorm';
 
 @ApiTags('user')
 @Controller('user')
@@ -189,5 +188,14 @@ export class UserController {
     @ReqUser() user: User,
   ) {
     return this.userService.getSubscribeFeature(user)
+  }
+
+  @ApiOperation({
+    summary: '测试事务'
+  })
+  @Public()
+  @Post('test_transaction')
+  testTransaction() {
+    return this.userService.transactionOthers()
   }
 }
