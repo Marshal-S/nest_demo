@@ -200,6 +200,14 @@ export class UserService {
         await this.blackRepository.delete({ userId });
     }
 
+    sleep(interval: number) {
+        return new Promise<void>((s, r) => {
+            setTimeout(() => {
+                s();
+            }, interval);
+        });
+    }
+
     async transactionOthers() {
         const user = await this.userRepository.findOne({
             where: {
@@ -209,19 +217,19 @@ export class UserService {
         user.age = 21;
 
         const user2 = new User()
-        user2.account = 'admin5'
+        user2.account = 'admin' + new Date().getTime()
         user2.nickname = '哈哈哈'
         user2.age = 25;
 
         const article = await this.articleRepository.findOne({
             where: {
-                id: 17,
+                id: 20,
             },
         });
         article.desc = '笑哭😂';
         try {
             await this.userRepository.manager.transaction(async (manager) => {
-                // await manager.save([user, user2, article]); 
+                // await manager.save([user, user2, article]);
                 //这个是需要顺序的
                 const user = await manager.save(user2)
                 article.userId = user.id
@@ -233,6 +241,50 @@ export class UserService {
             console.log(err);
             return;
         }
+
+        //模拟死锁
+        // const userId = 3;
+        // const articleId = 20;
+        // try {
+        //     this.userRepository.manager.transaction(async (manager) => {
+        //         console.log(1);
+        //         const user = await manager.findOneBy(User, {
+        //             id: userId,
+        //         });
+        //         const article = await manager.findOneBy(Article, {
+        //             id: articleId,
+        //         });
+        //         user.nickname += '1'
+        //         article.desc += '1'
+        //         await manager.save(user);
+        //         console.log(11);
+        //         await this.sleep(5000);
+        //         console.log(111);
+        //         await manager.save(article);
+        //         console.log(1111);
+        //     });
+        //     this.userRepository.manager.transaction(async (manager) => {
+        //         console.log(2);
+        //         const article = await manager.findOneBy(Article, {
+        //             id: articleId,
+        //         });
+        //         const user = await manager.findOneBy(User, {
+        //             id: userId,
+        //         });
+        //         await this.sleep(2000);
+        //         user.nickname += '2'
+        //         article.desc += '2'
+        //         await manager.save(article);
+        //         console.log(22);
+        //         await this.sleep(5000);
+        //         console.log(222);
+        //         await manager.save(user);
+        //         console.log(2222);
+        //     });
+        // } catch (err) {
+        //     console.log(err);
+        //     return;
+        // }
         console.log('成功了');
     }
 }
