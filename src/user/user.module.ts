@@ -16,6 +16,7 @@ import { FeatureService } from 'src/feature/feature.service';
 import { BlackList } from './entities/blacklist.entity';
 import { UserMiddleware } from './user.middleware';
 import { ArticleController } from 'src/article/article.controller';
+import { MinioService } from 'src/file/minio.service';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { ArticleController } from 'src/article/article.controller';
     TypeOrmModule.forFeature([Feature]),
     JwtModule.register({
       global: true, //设置为全局
-      secret: envConfig.secret,
+      secret: envConfig.APP_SECRET,
       signOptions: {
         expiresIn: '7d', //失效时长设置为7天
       },
@@ -44,7 +45,7 @@ import { ArticleController } from 'src/article/article.controller';
     },
   ],
 })
-export class UserModule  implements NestModule {
+export class UserModule implements NestModule {
 
   configure(consumer: MiddlewareConsumer) {
     consumer

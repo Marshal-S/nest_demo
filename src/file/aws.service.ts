@@ -25,22 +25,22 @@ export class AWSService {
         //外网签名(如果是在内网则无效，因此可能存在两种签名)
         this.client = new S3Client({
             region: 'tianjin1',
-            endpoint: envConfig.awsPoint,
+            endpoint: envConfig.AWS_POINT,
             credentials: {
-                accessKeyId: envConfig.awsAccessKey,
-                secretAccessKey: envConfig.awsSecretKey,
+                accessKeyId: envConfig.AWS_ACCESSKEY,
+                secretAccessKey: envConfig.AWS_SECRETKEY,
             },
         })
         //私有服务器签名(一般特殊所在地签名时使用，例如：服务器部署在内网，需要用到相关api)
         this.privateClient = new S3Client({
             region: 'tianjin1',
-            endpoint: envConfig.awsPointPrivate,
+            endpoint: envConfig.AWS_POINT_PRIVATE,
             credentials: {
-                accessKeyId: envConfig.awsAccessKey,
-                secretAccessKey: envConfig.awsSecretKey,
+                accessKeyId: envConfig.AWS_ACCESSKEY,
+                secretAccessKey: envConfig.AWS_SECRETKEY,
             },
         })
-        this.bucketName = envConfig.awsBucketName
+        this.bucketName = envConfig.AWS_BUCKETNAME
         instance = this
     }
 

@@ -1,5 +1,5 @@
-import { Feature } from "src/feature/entities/feature.entity";
-import { User } from "src/user/entities/user.entity";
+import { Feature } from "../../feature/entities/feature.entity";
+import { User } from "../../user/entities/user.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { ArticleStatus } from "../article.enum";
 

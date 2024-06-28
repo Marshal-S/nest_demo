@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { UserUpdateDto } from '../dto/req-user.dto';
 import { ResponseData } from 'src/request/response-data';
 import { BlackList } from '../entities/blacklist.entity';
+import { MinioService } from 'src/file/minio.service';
 
 @Injectable()
 export class UserService {
@@ -286,5 +287,10 @@ export class UserService {
         //     return;
         // }
         console.log('成功了');
+    }
+
+    async ranking(pagedto: PageDto) {
+        pagedto = new PageDto(pagedto)
+        // this.redisSercice.get('')
     }
 }

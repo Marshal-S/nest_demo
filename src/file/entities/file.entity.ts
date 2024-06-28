@@ -1,4 +1,3 @@
-import { envConfig } from "src/app.config";
 import { AfterLoad, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { MinioService } from "../minio.service";
 
@@ -44,6 +43,6 @@ export class File {
         if (this.filename) {
             this.url = await MinioService.share.getPresignedUrl(this.filename)
         }
-        // this.url = envConfig.fileUrl(this.path)
+        // this.url = getDownloadFileUrl(this.path)
     }
 }

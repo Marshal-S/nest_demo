@@ -5,7 +5,7 @@ import { File } from './entities/file.entity';
 import { ResponseData } from 'src/request/response-data';
 import { MinioService } from './minio.service';
 import { getFilename } from './file.model';
-import { envConfig } from 'src/app.config';
+import { getDownloadFileUrl } from 'src/app.config';
 import { join } from 'path';
 import { unlinkSync } from 'fs';
 import { ChunkInfo, uploadByFileHandle } from './file.utils';
@@ -35,7 +35,7 @@ export class FileService {
     await this.fileRepository.save(file)
     return ResponseData.ok({
       ...file,
-      url: envConfig.fileUrl(file.path)
+      url: getDownloadFileUrl(file.path)
     })
   }
 

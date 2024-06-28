@@ -10,11 +10,11 @@ export class MinioService {
     private client: Client;
     constructor() {
         this.client = new Client({
-            endPoint: envConfig.minioPoint,
-            port: envConfig.minioPort,
+            endPoint: envConfig.MINIO_POINT,
+            port: envConfig.MINIO_PORT && Number(envConfig.MINIO_PORT),
             useSSL: false,
-            accessKey: envConfig.minioAccessKey,
-            secretKey: envConfig.minioSecretKey,
+            accessKey: envConfig.MINIO_ACCESSKEY,
+            secretKey: envConfig.MINIO_SECRETKEY,
             // partSize: 64 * 1024 * 1024, //默认64M
         });
         minioService = this
@@ -29,7 +29,7 @@ export class MinioService {
     putFile(filename: string, buffer: Buffer) {
         //如果想两个端都存在文件，可以使用 fPutObject 逻辑更简单
         return this.client.putObject(
-            envConfig.minioBucketName,
+            envConfig.MINIO_BUCKETNAME,
             filename,
             buffer
         )
@@ -38,7 +38,7 @@ export class MinioService {
 
     fPutFile(filename: string, path: string) {
         return this.client.fPutObject(
-            envConfig.minioBucketName,
+            envConfig.MINIO_BUCKETNAME,
             filename,
             path
         )
@@ -48,7 +48,7 @@ export class MinioService {
     presignedUrl(filename: string) {
         return this.client.presignedUrl(
             'GET',
-            envConfig.minioBucketName,
+            envConfig.MINIO_BUCKETNAME,
             filename,
             //  7 * 24 * 60 ^ 60 //时长 s 默认7天
         )
@@ -57,14 +57,14 @@ export class MinioService {
     getPresignedUrl(filename: string) {
         return this.client.presignedUrl(
             'GET',
-            envConfig.minioBucketName,
+            envConfig.MINIO_BUCKETNAME,
             filename,
         )
     }
 
     getObject(filename: string) {
         return this.client.getObject(
-            envConfig.minioBucketName,
+            envConfig.MINIO_BUCKETNAME,
             filename,
         )
     }
@@ -72,19 +72,19 @@ export class MinioService {
     //合并文件
     async compostObject(filename: string, sourceList: string[]) {
         let desOptions = new CopyDestinationOptions({
-            Bucket: envConfig.minioBucketName,
+            Bucket: envConfig.MINIO_BUCKETNAME,
             Object: filename
         })
         const sources = sourceList.map( function (filename) {
             return new CopySourceOptions({
-                Bucket: envConfig.minioBucketName,
+                Bucket: envConfig.MINIO_BUCKETNAME,
                 Object: filename
             })
         })
         console.log(sourceList)
         await this.client.composeObject(desOptions, sources)
         await this.client.removeObjects(
-            envConfig.minioBucketName,
+            envConfig.MINIO_BUCKETNAME,
             sourceList
         )
         return filename
@@ -92,14 +92,14 @@ export class MinioService {
 
     presignPutUrl(filename: string) {
         return this.client.presignedPutObject(
-            envConfig.minioBucketName,
+            envConfig.MINIO_BUCKETNAME,
             filename,
         )
     }
 
     presignPutUrlByFormdata(filename: string) {
         const policy = new PostPolicy()
-        policy.setBucket(envConfig.minioBucketName)
+        policy.setBucket(envConfig.MINIO_BUCKETNAME)
         policy.setContentType('multipart/form-data')
         policy.setKey(filename)
         policy.setContentLengthRange(1, 5 * 1024 * 1024 * 1024) //5G

@@ -5,8 +5,7 @@ import { MinioService } from "./minio.service"
 import { FilePresignDto } from "./dto/req-file.dto"
 import { File } from "./entities/file.entity"
 import { ResponseData } from "src/request/response-data"
-import { env } from "process"
-import { envConfig } from "src/app.config"
+import { getDownloadFileUrl } from "src/app.config"
 import { Response } from "express"
 
 
@@ -37,7 +36,7 @@ export class FileExService {
 			...file,
 			presign_data,
 			url: body.unChanged
-				? envConfig.fileUrl(filename)
+				? getDownloadFileUrl(filename)
 				: undefined,
 		})
 	}
@@ -61,7 +60,7 @@ export class FileExService {
 			...file,
 			presign_url: url,
 			url: body.unChanged
-				? envConfig.fileUrl(filename)
+				? getDownloadFileUrl(filename)
 				: undefined,
 		})
 	}

@@ -1,5 +1,5 @@
-import { Article } from "src/article/entities/article.entity";
-import { User } from "src/user/entities/user.entity";
+import { Article } from "../../article/entities/article.entity";
+import { User } from "../../user/entities/user.entity";
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { FeatureStatus } from "../feature.enum";
 

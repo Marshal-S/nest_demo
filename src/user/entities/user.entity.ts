@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 import { Auth } from "./auth.entity"
-import { Feature } from "src/feature/entities/feature.entity"
-import { Article } from "src/article/entities/article.entity"
+import { Feature } from "../../feature/entities/feature.entity"
+import { Article } from "../../article/entities/article.entity"
 
 @Entity()  //默认带的 entity
 export class User {

@@ -35,7 +35,7 @@ export class UserGuard implements CanActivate {
       //验证token或解码获取信息
       try {
         let user = this.jwtService.verify(token, {
-          secret: envConfig.secret,
+          secret: envConfig.APP_SECRET,
         });
         if (user?.id) {
           //设置一个黑名单功能，设置未授权，让重新登录

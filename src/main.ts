@@ -16,13 +16,13 @@ async function bootstrap() {
   //设置跨域支持，能跨域访问其他网站
   app.enableCors();
   //设置全局前缀
-  app.setGlobalPrefix(envConfig.prefix);
+  app.setGlobalPrefix('api');
   //设置校验
   app.useGlobalPipes(new ValidationPipe());
   app.use(json({ limit: '10mb' })) //默认就是100kb
   app.use(
     session({
-      secret: envConfig.secret,
+      secret: envConfig.APP_SECRET,
       resave: false,
       saveUninitialized: false,
     })
