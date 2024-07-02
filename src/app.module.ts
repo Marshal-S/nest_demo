@@ -13,6 +13,7 @@ import { UserMiddleware } from './user/user.middleware';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { OrderModule } from './order/order.module';
 import { TypeormConfig } from './typeorm-config';
+import { AppMiddleware } from './app.middleware';
 
 @Module({
     imports: [
@@ -56,10 +57,11 @@ import { TypeormConfig } from './typeorm-config';
     controllers: [AppController],
     providers: [AppService],
 })
-export class AppModule {
-    // configure(consumer: MiddlewareConsumer) {
-    //   consumer
-    //     .apply(UserMiddleware)
-    //     .forRoutes(UserController, ArticleController);
-    // }
+// export class AppModule {}
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer
+            .apply(AppMiddleware)
+            .forRoutes('*');
+    }
 }

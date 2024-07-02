@@ -6,7 +6,7 @@ import { File } from './entities/file.entity';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { MinioService } from './minio.service';
-import dayjs = require('dayjs');
+const dayjs = require('dayjs');
 import { getFilename } from './file.model';
 import { FileExService } from './fileEx.service';
 import { FileSubscriber } from './file.subscriber';

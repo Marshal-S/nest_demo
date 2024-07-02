@@ -29,5 +29,19 @@ export const TypeormConfig: TypeOrmModuleOptions = {
 		BlackList,
 		Auth,
     ],
+    // logging: true,
+    // logging: "all",
+    logger: 'file',
+    //开了这个不开logging类型，查询时间超过设定ms的会保存，可以设置环境变量调整
+    maxQueryExecutionTime: 500,
+    // cache: true, //允许使用cache，默认使用一个新表作为缓存
+    // cache: {
+    //     type: 'ioredis',
+    //     duration: 30000, //设置30s
+    //     options: {
+    //         host: envConfig.REDIS_HOST,
+    //         port: Number(envConfig.REDIS_PORT),
+    //     },
+    // },
 }
 export const AppDataSource: any = new DataSource(TypeormConfig as DataSourceOptions)

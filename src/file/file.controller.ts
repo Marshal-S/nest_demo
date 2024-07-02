@@ -111,13 +111,13 @@ export class FileController {
     }
 
     @ApiOperation({
-        summary: '上传前的预签名（oss）',
+        summary: '上传前的预签名（put）',
     })
     @Public()
     @APIResponse(ResFileDto)
-    @Post('presign_oss')
+    @Post('presign_put')
     presignByOss(@Body() body: FilePresignDto) {
-        return this.fileExService.presignByOss(body);
+        return this.fileExService.presignByPut(body);
     }
 
     @ApiOperation({

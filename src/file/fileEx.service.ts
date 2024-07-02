@@ -41,7 +41,7 @@ export class FileExService {
 		})
 	}
 
-	async presignByOss(body: FilePresignDto) {
+	async presignByPut(body: FilePresignDto) {
 		const list = body.originname.split('.')
 		const ext =
 			list.length > 1 ? '.' + body.originname.split('.').at(-1) : ''

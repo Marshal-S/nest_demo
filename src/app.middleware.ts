@@ -1,12 +1,10 @@
 import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
 import { NextFunction } from 'express';
 
+//一个请求相应超过 500ms 的就给出log
 @Injectable()
-export class UserMiddleware implements NestMiddleware {
-	// use(req: Request, res: Response, next: NextFunction) {
+export class AppMiddleware implements NestMiddleware {
     use(req: Request, res: any, next: NextFunction) {
-        //假设我们要获取一个请求的开始或者结束时间
-		//如果平时我们不需要，发现问题需要，我们也可以另起一个单例，直接使用一个接口设置标识，这里根据标识更新调整是否监听即可，以及请求时间间隔
 		const maxRequestTime = 500 //假设设置的最大请求时间是500ms
         const startTime = new Date();
 		const startString = startTime.toISOString()
@@ -17,7 +15,6 @@ export class UserMiddleware implements NestMiddleware {
 			if (interval >= maxRequestTime) {
 				Logger.log(`finish # url:${req.url}, duration:${Date.now() - startTime.getTime()} ms, startTime:${startString}}`);
 			}
-			// Logger.log(`finish # url:${req.url}, duration:${Date.now() - startTime.getTime()} ms, startTime:${startString}}`);
         });
         next();
     }

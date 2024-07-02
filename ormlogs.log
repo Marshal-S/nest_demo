@@ -1,0 +1,8 @@
+[2024-07-02T02:00:28.358Z][SLOW QUERY: 3 ms]: SELECT `user`.`id` AS `user_id`, `user`.`title` AS `user_title`, `user`.`desc` AS `user_desc`, `user`.`content` AS `user_content`, `user`.`status` AS `user_status`, `user`.`createTime` AS `user_createTime`, `user`.`updateTime` AS `user_updateTime`, `user`.`userId` AS `user_userId`, `user`.`collectCount` AS `user_collectCount`, `user`.`featureId` AS `user_featureId` FROM `article` `user` WHERE updateTime>=? AND updateTime<? ORDER BY `user`.`updateTime` DESC -- PARAMETERS: ["2024-07-02T02:00:28.352Z","2024-07-03T02:00:28.352Z"]
+
+[2024-07-02T02:00:58.863Z][SLOW QUERY: 4 ms]: SELECT VERSION() AS `version`
+
+[2024-07-02T02:01:42.109Z][SLOW QUERY: 3 ms]: SELECT VERSION() AS `version`
+
+[2024-07-02T02:01:42.272Z][SLOW QUERY: 2 ms]: SELECT `BlackList`.`id` AS `BlackList_id`, `BlackList`.`userId` AS `BlackList_userId`, `BlackList`.`createDate` AS `BlackList_createDate` FROM `black_list` `BlackList`
+
