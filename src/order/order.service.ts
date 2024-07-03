@@ -1,16 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity';
 import { Like, Repository } from 'typeorm';
 const dayjs = require('dayjs');
 import { ResponseData } from 'src/request/response-data';
+import { AuthService } from 'src/user/service/auth.service';
+import { UserService } from 'src/user/service/user.service';
 
 @Injectable()
 export class OrderService {
     constructor(
         @InjectRepository(Order) private orderRepository: Repository<Order>,
+        @Inject(forwardRef(() => UserService)) private userService: UserService,
+        @Inject(forwardRef(() => AuthService)) private authService: AuthService,
     ) {}
+
+    testCircleImport() {
+        this.userService.testCircleImport();
+        this.authService.testCircleImport();
+    }
 
     async create() {
         //这里假设流水号以 OM 开头

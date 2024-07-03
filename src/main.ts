@@ -75,7 +75,7 @@ const createLogger = () => {
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
-    app.useLogger(createLogger());
+    // app.useLogger(createLogger());
     // const app = await NestFactory.create(AppModule, { cors: true }); //创建顺道设置跨域
     //设置跨域支持，能跨域访问其他网站
     app.enableCors();

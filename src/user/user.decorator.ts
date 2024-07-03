@@ -1,6 +1,7 @@
 import { Headers, SetMetadata, UseGuards } from '@nestjs/common';
 import { UserGuard } from './user.guard';
 import { PublicStatus } from './user.enum';
+import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 //是否公开，设置该装饰器，可以避免jwt的校验
 export const PUBLIC_KEY = '__public_key';
@@ -12,10 +13,20 @@ export const PublicUser = () => SetMetadata(PUBLIC_KEY, PublicStatus.token);
 //手动校验
 export const Guards = () => UseGuards(UserGuard)
 
-//设置一个key，方便快速通过装饰器获取用户信息，在jwt验证时存入，这里获取
+//设置一个key，方便快速通过装饰器获取用户信息，在jwt验证时存入，这里获取(由于header会映射出参数，使用request)
 export const USER_ID_KEY  = '__user_id_key';
-export const ReqUserId = () => Headers(USER_ID_KEY);
+// export const ReqUserId = () => Headers(USER_ID_KEY);
 
-//如果保存的是 user 则可以用这个
+//如果保存的是 user 则可以用这个(由于header会映射出参数，使用request)
 export const USER_KEY  = '__user_key';
-export const ReqUser = () => Headers(USER_KEY);
+// export const ReqUser = () => Headers(USER_KEY);
+
+export const User = createParamDecorator(
+    (data: string | undefined | null, ctx: ExecutionContext) => {
+        const request = ctx.switchToHttp().getRequest();
+		const user = request.user
+        return data ? user?.[data] : user
+    },
+);
+export const ReqUserId = () => User();
+export const ReqUser = (key?: string | null) => User(key);

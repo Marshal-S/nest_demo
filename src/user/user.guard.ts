@@ -44,7 +44,9 @@ export class UserGuard implements CanActivate {
           }
           // token验证后，获取用户信息，避免用户不存在了(被删除、封号)还能继续使用的情况，可以设置维护黑、白名单之类的
           // 然后根据 token 的期限，定时清理黑白名单即可
-          headers[USER_KEY] = user; //保存不变的用户令牌信息，可能不只是id，后续用户操作用这个会方便很多
+          // headers[USER_KEY] = user; //保存不变的用户令牌信息，可能不只是id，后续用户操作用这个会方便很多
+          //由于header装饰器某些情况下会映射，我们使用request来保存user
+          request[USER_KEY] = user;
           // headers[USER_ID_KEY] = id; //也可以直接保存用户id，用户操作会经常用到
           return true
         }

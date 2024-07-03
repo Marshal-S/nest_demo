@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, forwardRef } from '@nestjs/common';
 import { UserService } from './service/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -17,39 +17,46 @@ import { BlackList } from './entities/blacklist.entity';
 import { UserMiddleware } from './user.middleware';
 import { ArticleController } from 'src/article/article.controller';
 import { MinioService } from 'src/file/minio.service';
+import { Order } from 'src/order/entities/order.entity';
+import { OrderService } from 'src/order/order.service';
+import { OrderModule } from 'src/order/order.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([User]),
-    TypeOrmModule.forFeature([Auth]),
-    TypeOrmModule.forFeature([BlackList]),
-    TypeOrmModule.forFeature([Article]),
-    TypeOrmModule.forFeature([Feature]),
-    JwtModule.register({
-      global: true, //设置为全局
-      secret: envConfig.APP_SECRET,
-      signOptions: {
-        expiresIn: '7d', //失效时长设置为7天
-      },
-    }),
-  ],
-  controllers: [UserController],
-  providers: [
-    UserService, 
-    AuthService,
-    ArticleService,
-    FeatureService,
-    {
-      provide: APP_GUARD,
-      useClass: UserGuard,
-    },
-  ],
+    imports: [
+        TypeOrmModule.forFeature([
+            User,
+            Auth,
+            BlackList,
+            Article,
+            Feature,
+            Order,
+        ]),
+        JwtModule.register({
+            global: true, //设置为全局
+            secret: envConfig.APP_SECRET,
+            signOptions: {
+                expiresIn: '7d', //失效时长设置为7天
+            },
+        }),
+        forwardRef(() => OrderModule),
+    ],
+    controllers: [UserController],
+    providers: [
+        UserService,
+        AuthService,
+        ArticleService,
+        FeatureService,
+        {
+            provide: APP_GUARD,
+            useClass: UserGuard,
+        },
+    ],
+    exports: [UserService, AuthService],
 })
 export class UserModule implements NestModule {
-
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(UserMiddleware)
-      .forRoutes(UserController, ArticleController);
-  }
+    configure(consumer: MiddlewareConsumer) {
+        consumer
+            .apply(UserMiddleware)
+            .forRoutes(UserController, ArticleController);
+    }
 }

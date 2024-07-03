@@ -1,7 +1,7 @@
 import { PageDto } from './../../request/page.dto';
 import { Article } from 'src/article/entities/article.entity';
 import { Feature } from 'src/feature/entities/feature.entity';
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
@@ -9,6 +9,8 @@ import { UserUpdateDto } from '../dto/req-user.dto';
 import { ResponseData } from 'src/request/response-data';
 import { BlackList } from '../entities/blacklist.entity';
 import { MinioService } from 'src/file/minio.service';
+import { OrderService } from 'src/order/order.service';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class UserService {
@@ -23,8 +25,16 @@ export class UserService {
         private featureRepository: Repository<Feature>,
         @InjectRepository(Article)
         private articleRepository: Repository<Article>,
+        @Inject(forwardRef(() => OrderService))
+        private orderService: OrderService,
+        @Inject(forwardRef(() => AuthService)) private authService: AuthService,
     ) {
         this.initBlackList();
+    }
+
+    testCircleImport() {
+        this.orderService.testCircleImport();
+        this.authService.testCircleImport();
     }
 
     queryUserById(id: number) {
@@ -217,9 +227,9 @@ export class UserService {
         });
         user.age = 21;
 
-        const user2 = new User()
-        user2.account = 'admin' + new Date().getTime()
-        user2.nickname = '哈哈哈'
+        const user2 = new User();
+        user2.account = 'admin' + new Date().getTime();
+        user2.nickname = '哈哈哈';
         user2.age = 25;
 
         const article = await this.articleRepository.findOne({
@@ -232,12 +242,15 @@ export class UserService {
             await this.userRepository.manager.transaction(async (manager) => {
                 // await manager.save([user, user2, article]);
                 //这个是需要顺序的
-                const user = await manager.save(user2)
-                article.userId = user.id
-                await manager.save(article)
+                const user = await manager.save(user2);
+                article.userId = user.id;
+                await manager.save(article);
             });
             //"READ UNCOMMITTED" | "READ COMMITTED" | "REPEATABLE READ" | "SERIALIZABLE"
-            await this.userRepository.manager.transaction('SERIALIZABLE', async (manager) => {})
+            await this.userRepository.manager.transaction(
+                'SERIALIZABLE',
+                async (manager) => {},
+            );
         } catch (err) {
             console.log(err);
             return;
@@ -290,7 +303,7 @@ export class UserService {
     }
 
     async ranking(pagedto: PageDto) {
-        pagedto = new PageDto(pagedto)
+        pagedto = new PageDto(pagedto);
         // this.redisSercice.get('')
     }
 }
