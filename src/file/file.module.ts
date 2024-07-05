@@ -10,12 +10,14 @@ const dayjs = require('dayjs');
 import { getFilename } from './file.model';
 import { FileExService } from './fileEx.service';
 import { FileSubscriber } from './file.subscriber';
-import { createClient } from 'redis';
-import { envConfig } from 'src/app.config';
-import { RedisService } from './redis.service';
-import { redis_provide_identifier } from './redis.decorator';
+import { RedisProvider } from './redis.decorator';
+// import { RedisService } from './redis.service';
 
-@Global()
+const CustomService = {
+    host: ''
+}
+export type CustomConfigType = typeof CustomService;
+
 @Module({
     imports: [
         TypeOrmModule.forFeature([File]),
@@ -36,21 +38,13 @@ import { redis_provide_identifier } from './redis.decorator';
     providers: [
         FileService,
         FileExService,
-        MinioService,
         FileSubscriber,
-        RedisService,
+        MinioService,
+        // RedisService,
+        RedisProvider,
         {
-            provide: redis_provide_identifier,
-            async useFactory() {
-                const client = createClient({
-                    socket: {
-                        host: envConfig.REDIS_HOST,
-                        port: Number(envConfig.REDIS_PORT),
-                    },
-                });
-                await client.connect();
-                return client;
-            },
+            provide: 'file_custom',
+            useValue: CustomService,
         },
     ],
     exports: [FileService, FileExService],

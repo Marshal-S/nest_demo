@@ -19,7 +19,7 @@ let instance: AWSService | null = null
 @Injectable()
 export class AWSService {
     client: S3Client
-    private privateClient: S3Client
+    privateClient: S3Client
     bucketName: string
     constructor() {
         //外网签名(如果是在内网则无效，因此可能存在两种签名)

@@ -14,6 +14,7 @@ import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { OrderModule } from './order/order.module';
 import { TypeormConfig } from './typeorm-config';
 import { AppMiddleware } from './app.middleware';
+import { ConfigModule } from './config/config.module';
 
 @Module({
     imports: [
@@ -53,6 +54,11 @@ import { AppMiddleware } from './app.middleware';
         ArticleModule,
         FeatureModule,
         OrderModule,
+        ConfigModule.register({
+            isGlobal: true,
+            key: 'config-key',
+            secret: 'config-secret',
+        }),
     ],
     controllers: [AppController],
     providers: [AppService],
@@ -60,8 +66,6 @@ import { AppMiddleware } from './app.middleware';
 // export class AppModule {}
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer
-            .apply(AppMiddleware)
-            .forRoutes('*');
+        consumer.apply(AppMiddleware).forRoutes('*');
     }
 }
