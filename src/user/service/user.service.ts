@@ -11,6 +11,8 @@ import { BlackList } from '../entities/blacklist.entity';
 import { MinioService } from 'src/file/minio.service';
 import { OrderService } from 'src/order/order.service';
 import { AuthService } from './auth.service';
+import { RedisService } from '@liaoliaots/nestjs-redis';
+import { ConfigService } from 'src/config/config.service';
 
 @Injectable()
 export class UserService {
@@ -28,7 +30,10 @@ export class UserService {
         @Inject(forwardRef(() => OrderService))
         private orderService: OrderService,
         @Inject(forwardRef(() => AuthService)) private authService: AuthService,
+        // private redisService: RedisService, //会发现不用导入到module，也可以使用
+        // private configService: ConfigService,
     ) {
+        // console.log(this.configService);
         this.initBlackList();
     }
 

@@ -18,7 +18,11 @@ export class RedisService {
             //默认就是这个，一般一个项目就用一个，可能多个项目用一台redis服务器，看情况来就行
             // database: 0, 
         })
-        this.client.connect()
+        this.client.connect().then(res => {
+            console.log('连接成功')
+        }).catch(err => {
+            console.log('连接失败')
+        })
     }
 
     //根据 hash 设置 value值

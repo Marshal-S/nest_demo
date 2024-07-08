@@ -11,7 +11,7 @@ import { getFilename } from './file.model';
 import { FileExService } from './fileEx.service';
 import { FileSubscriber } from './file.subscriber';
 import { RedisProvider } from './redis.decorator';
-// import { RedisService } from './redis.service';
+import { RedisService } from './redis.service';
 
 const CustomService = {
     host: ''
@@ -40,7 +40,7 @@ export type CustomConfigType = typeof CustomService;
         FileExService,
         FileSubscriber,
         MinioService,
-        // RedisService,
+        RedisService,
         RedisProvider,
         {
             provide: 'file_custom',

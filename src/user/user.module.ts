@@ -20,6 +20,7 @@ import { MinioService } from 'src/file/minio.service';
 import { Order } from 'src/order/entities/order.entity';
 import { OrderService } from 'src/order/order.service';
 import { OrderModule } from 'src/order/order.module';
+import { ConfigModule } from 'src/config/config.module';
 
 @Module({
     imports: [
@@ -39,6 +40,13 @@ import { OrderModule } from 'src/order/order.module';
             },
         }),
         forwardRef(() => OrderModule),
+        // ConfigModule.register({
+        //     host: 'host',
+        //     port: 123,
+        //     // username: envConfig.REDIS_USER,
+        //     // password: envConfig.REDIS_PASSWORD,
+        //     db: envConfig.REDIS_DB && Number(envConfig.REDIS_DB),
+        // }),
     ],
     controllers: [UserController],
     providers: [

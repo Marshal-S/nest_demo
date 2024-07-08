@@ -15,6 +15,7 @@ import { OrderModule } from './order/order.module';
 import { TypeormConfig } from './typeorm-config';
 import { AppMiddleware } from './app.middleware';
 import { ConfigModule } from './config/config.module';
+import { env } from 'process';
 
 @Module({
     imports: [
@@ -47,6 +48,8 @@ import { ConfigModule } from './config/config.module';
                 host: envConfig.REDIS_HOST,
                 port: Number(envConfig.REDIS_PORT),
                 db: Number(envConfig.REDIS_DB),
+                // username: envConfig.REDIS_USER,
+                // password: envConfig.REDIS_PASSWORD
             },
         }),
         FileModule,
@@ -55,9 +58,11 @@ import { ConfigModule } from './config/config.module';
         FeatureModule,
         OrderModule,
         ConfigModule.register({
-            isGlobal: true,
-            key: 'config-key',
-            secret: 'config-secret',
+            host: envConfig.REDIS_HOST,
+            port: envConfig.REDIS_PORT && Number(envConfig.REDIS_PORT),
+            // username: envConfig.REDIS_USER,
+            // password: envConfig.REDIS_PASSWORD,
+            db: envConfig.REDIS_DB && Number(envConfig.REDIS_DB),
         }),
     ],
     controllers: [AppController],

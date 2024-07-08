@@ -1,9 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from './config/config.service';
-import { ConfigType } from 'dayjs';
 
 @Injectable()
 export class AppService {
+    constructor(private configService: ConfigService) {
+        console.log(this.configService);
+    }
+
     getHello(): string {
         return '欢迎来到nestjs demo!';
     }
