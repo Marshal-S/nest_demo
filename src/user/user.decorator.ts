@@ -28,5 +28,5 @@ export const User = createParamDecorator(
         return data ? user?.[data] : user
     },
 );
-export const ReqUserId = () => User();
+export const ReqUserId = () => User("id");
 export const ReqUser = (key?: string | null) => User(key);
