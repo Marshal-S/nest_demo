@@ -91,6 +91,8 @@ async function bootstrap() {
             saveUninitialized: false,
         }),
     );
+    //设置我们环境变量时区timeZone为中国上海，在我们nestjs内部一些会有效，dayjs、moment这些通用的自然无效
+    process.env.TZ = 'Asia/Shanghai';
     //设置我们的public文件夹可以直接访问
     app.use('/public', express.static(join(__dirname, '../public')));
     const options = new DocumentBuilder()

@@ -16,6 +16,8 @@ import { TypeormConfig } from './typeorm-config';
 import { AppMiddleware } from './app.middleware';
 import { ConfigModule } from './config/config.module';
 import { env } from 'process';
+import { SchedulesModule } from './schedules/schedules.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
     imports: [
@@ -64,6 +66,8 @@ import { env } from 'process';
             // password: envConfig.REDIS_PASSWORD,
             db: envConfig.REDIS_DB && Number(envConfig.REDIS_DB),
         }),
+        SchedulesModule,
+        ScheduleModule.forRoot(),
     ],
     controllers: [AppController],
     providers: [AppService],
