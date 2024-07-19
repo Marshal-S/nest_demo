@@ -75,9 +75,8 @@ import * as dotenv from 'dotenv';
 
 type ConfigEnv = {
     APP_SECRET: string;
-    APP_HOST: string;
-    APP_PORT: string;
-    APP_PREFIX: string;
+    APP_LISTEN_PORT: string; //app监听端口号，部署时方便调整
+    SWAGGER_UI_ENABLE: string; //是否显示swagger
 
     SERVICE_URL: string;
 

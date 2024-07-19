@@ -102,12 +102,16 @@ async function bootstrap() {
         .build();
     //设置文档
     const document = SwaggerModule.createDocument(app, options);
-    SwaggerModule.setup('api-docs', app, document);
+    SwaggerModule.setup('api-docs', app, document, {
+        swaggerUiEnabled: envConfig.SWAGGER_UI_ENABLE ? true : false,
+    });
     // //注册全局错误过滤器(校验和自己抛出的异常)
     // app.useGlobalFilters(new HttpExceptionFilter());
     // //添加成功后的参数过滤器
     // app.useGlobalInterceptors(new TransformInterceptor())
-    await app.listen(4000);
+    await app.listen(
+        envConfig.APP_LISTEN_PORT ? Number(envConfig.APP_LISTEN_PORT) : 4000,
+    );
 }
 
 bootstrap();
