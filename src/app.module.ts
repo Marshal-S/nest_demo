@@ -18,6 +18,7 @@ import { ConfigModule } from './config/config.module';
 import { env } from 'process';
 import { SchedulesModule } from './schedules/schedules.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { VersionModule } from './version/version.module';
 
 @Module({
     imports: [
@@ -68,6 +69,7 @@ import { ScheduleModule } from '@nestjs/schedule';
         }),
         SchedulesModule,
         ScheduleModule.forRoot(),
+        VersionModule,
     ],
     controllers: [AppController],
     providers: [AppService],

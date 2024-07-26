@@ -17,7 +17,7 @@ export class SchedulesService {
     //     // utcOffset: 8 * 60, //根据utc偏移精确到分
     //     //disable: true, //可以设置默认不启用，后续启用
     // })
-    @Cron('* * 17 * * *', { name: 'wxchat_appy_remind' })
+    @Cron('0 0 17 * * *', { name: 'wxchat_appy_remind' })
     async remindUsers() {
         console.log('123');
     }

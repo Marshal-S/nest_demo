@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { HttpExceptionFilter } from './request/filter/http-exception.filter';
 import { TransformInterceptor } from './request/filter/transform.interceptor';
 import * as session from 'express-session';
@@ -109,6 +109,18 @@ async function bootstrap() {
     // app.useGlobalFilters(new HttpExceptionFilter());
     // //添加成功后的参数过滤器
     // app.useGlobalInterceptors(new TransformInterceptor())
+    //设置版本号，但是个人不推荐
+    // app.enableVersioning({
+    //     type: VersioningType.URI,
+    // });
+    // app.enableVersioning({
+    //     type: VersioningType.HEADER,
+    //     header: 'Api-Version',
+    // });
+    // app.enableVersioning({
+    //     type: VersioningType.MEDIA_TYPE,
+    //     key: 'v=',
+    // });
     await app.listen(
         envConfig.APP_LISTEN_PORT ? Number(envConfig.APP_LISTEN_PORT) : 4000,
     );

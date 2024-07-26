@@ -29,12 +29,12 @@ export class UserGuard implements CanActivate {
     //剩下的都需要校验，publictoken的可以通过
     //获取请求，并校验token
     const request = context.switchToHttp().getRequest();
-    let headers = request.headers
+    const headers = request.headers
     const token = headers.token
     if (token) {
       //验证token或解码获取信息
       try {
-        let user = this.jwtService.verify(token, {
+        const user = this.jwtService.verify(token, {
           secret: envConfig.APP_SECRET,
         });
         if (user?.id) {
