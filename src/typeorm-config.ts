@@ -1,12 +1,13 @@
-import { TypeOrmModuleOptions } from "@nestjs/typeorm"
-import { envConfig } from "./app.config"
-import { DataSource, DataSourceOptions } from "typeorm"
-import { Order } from "./order/entities/order.entity"
-import { Article } from "./article/entities/article.entity"
-import { User } from "./user/entities/user.entity"
-import { Feature } from "./feature/entities/feature.entity"
-import { BlackList } from "./user/entities/blacklist.entity"
-import { Auth } from "./user/entities/auth.entity"
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { envConfig } from './app.config';
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { Order } from './order/entities/order.entity';
+import { Article } from './article/entities/article.entity';
+import { User } from './user/entities/user.entity';
+import { Feature } from './feature/entities/feature.entity';
+import { BlackList } from './user/entities/blacklist.entity';
+import { Auth } from './user/entities/auth.entity';
+import { V11723512030883 } from './migration/1723512030883-v1';
 
 export const TypeormConfig: TypeOrmModuleOptions = {
     type: 'mysql',
@@ -19,21 +20,14 @@ export const TypeormConfig: TypeOrmModuleOptions = {
     retryDelay: 500,
     retryAttempts: 10,
     autoLoadEntities: true, //自动查找entity实体
-    // migrations: [],
-	entities: [
-        Order,
-        File,
-        Article,
-		User,
-		Feature,
-		BlackList,
-		Auth,
-    ],
+    entities: ['./**/entities/*.entity.js'],
+    // entities: [Order, File, Article, User, Feature, BlackList, Auth],
+    migrations: [V11723512030883],
     // logging: true,
     // logging: "all",
-    logger: 'file',
-    //开了这个不开logging类型，查询时间超过设定ms的会保存，可以设置环境变量调整
-    maxQueryExecutionTime: 500,
+    // logger: 'file',
+    // //开了这个不开logging类型，查询时间超过设定ms的会保存，可以设置环境变量调整
+    // maxQueryExecutionTime: 500,
     // cache: true, //允许使用cache，默认使用一个新表作为缓存
     // cache: {
     //     type: 'ioredis',
@@ -43,5 +37,7 @@ export const TypeormConfig: TypeOrmModuleOptions = {
     //         port: Number(envConfig.REDIS_PORT),
     //     },
     // },
-}
-export const AppDataSource: any = new DataSource(TypeormConfig as DataSourceOptions)
+};
+export const AppDataSource: any = new DataSource(
+    TypeormConfig as DataSourceOptions,
+);
